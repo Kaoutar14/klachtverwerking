@@ -40,9 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = (int) $_ENV['MAIL_PORT'];
 
+            // Afzender
+            $mail->setFrom($_ENV['MAIL_FROM'], 'Klachtverwerking');
 
             // E-mail naar de gebruiker
             $mail->addAddress($email, $naam);
+
+            // Jezelf in de cc
+            $mail->addCC($_ENV['MAIL_CC']);
 
 
             // Onderwerp
