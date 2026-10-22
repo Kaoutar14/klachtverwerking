@@ -5,11 +5,15 @@ require __DIR__ . '/vendor/autoload.php';
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Dotenv\Dotenv;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 $message = '';
+$log = new Logger('klachtverwerking');
+$log->pushHandler(new StreamHandler(__DIR__ . '/info.log', Logger::INFO));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -65,6 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // E-mail versturen
             $mail->send();
+            $log->info('Klacht ontvangen', [
+            'naam' => $naam,
+            'email' => $email,
+            'klacht' => $klacht,
+            ]);
+
 
             $message = 'Uw klacht is verzonden.';
 
